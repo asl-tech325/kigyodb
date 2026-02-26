@@ -8,232 +8,164 @@
 <meta name="apple-mobile-web-app-title" content="企業DB">
 <meta name="theme-color" content="#0d0f14">
 <link rel="manifest" href="manifest.json">
-<link rel="apple-touch-icon" href="icon.png">
 <title>企業情報DB</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg: #0d0f14; --surface: #161920; --surface2: #1e2230;
-  --border: #2a2f3d; --accent: #4fffb0; --accent2: #7b6fff;
-  --accent3: #ff6b6b; --accent4: #ffd166;
-  --text: #e8eaf0; --muted: #6b7280; --radius: 12px;
+  --bg:#0d0f14;--surface:#161920;--surface2:#1e2230;--border:#2a2f3d;
+  --accent:#4fffb0;--accent2:#7b6fff;--accent3:#ff6b6b;--accent4:#ffd166;
+  --text:#e8eaf0;--muted:#6b7280;--radius:12px;
 }
-* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-html, body { height: 100%; overflow: hidden; }
-body { background: var(--bg); color: var(--text); font-family: 'Noto Sans JP', sans-serif; display: flex; flex-direction: column; }
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;overflow:hidden;}
+body{background:var(--bg);color:var(--text);font-family:'Noto Sans JP',sans-serif;display:flex;flex-direction:column;}
 
-.topbar {
-  display: flex; align-items: center; gap: 10px;
-  padding: 12px 16px; border-bottom: 1px solid var(--border);
-  background: var(--bg); position: sticky; top: 0; z-index: 50;
-  padding-top: max(12px, env(safe-area-inset-top));
-}
-.app-title { font-family: 'Space Mono', monospace; font-size: 14px; color: var(--accent); letter-spacing: 1px; flex-shrink: 0; }
-.search-box { flex: 1; position: relative; }
-.search-box input {
-  width: 100%; background: var(--surface); border: 1px solid var(--border);
-  border-radius: 20px; padding: 8px 14px 8px 34px;
-  color: var(--text); font-family: 'Noto Sans JP', sans-serif; font-size: 14px;
-  outline: none; -webkit-appearance: none;
-}
-.search-box input:focus { border-color: var(--accent); }
-.search-icon { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); color: var(--muted); font-size: 14px; }
-.add-btn {
-  width: 38px; height: 38px; border-radius: 50%; background: var(--accent);
-  border: none; display: flex; align-items: center; justify-content: center;
-  font-size: 22px; cursor: pointer; flex-shrink: 0; color: #000; font-weight: 700;
-}
+.topbar{display:flex;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid var(--border);background:var(--bg);position:sticky;top:0;z-index:50;padding-top:max(12px,env(safe-area-inset-top));}
+.app-title{font-family:'Space Mono',monospace;font-size:14px;color:var(--accent);letter-spacing:1px;flex-shrink:0;}
+.search-box{flex:1;position:relative;}
+.search-box input{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:8px 14px 8px 34px;color:var(--text);font-family:'Noto Sans JP',sans-serif;font-size:14px;outline:none;-webkit-appearance:none;}
+.search-box input:focus{border-color:var(--accent);}
+.search-icon{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:14px;}
+.add-btn{width:38px;height:38px;border-radius:50%;background:var(--accent);border:none;display:flex;align-items:center;justify-content:center;font-size:22px;cursor:pointer;flex-shrink:0;color:#000;font-weight:700;}
 
-.filter-bar { padding: 10px 16px; overflow-x: auto; white-space: nowrap; border-bottom: 1px solid var(--border); -webkit-overflow-scrolling: touch; scrollbar-width: none; }
-.filter-bar::-webkit-scrollbar { display: none; }
-.chip { display: inline-flex; align-items: center; gap: 5px; background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 5px 12px; font-size: 12px; color: var(--muted); cursor: pointer; margin-right: 6px; transition: all .15s; white-space: nowrap; }
-.chip.active { background: #1e2a1e; border-color: var(--accent); color: var(--accent); }
-.chip.industry.active { background: #1e1e3a; border-color: var(--accent2); color: var(--accent2); }
+.filter-bar{padding:10px 16px;overflow-x:auto;white-space:nowrap;border-bottom:1px solid var(--border);-webkit-overflow-scrolling:touch;scrollbar-width:none;}
+.filter-bar::-webkit-scrollbar{display:none;}
+.chip{display:inline-flex;align-items:center;gap:5px;background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:5px 12px;font-size:12px;color:var(--muted);cursor:pointer;margin-right:6px;transition:all .15s;white-space:nowrap;}
+.chip.active{background:#1e2a1e;border-color:var(--accent);color:var(--accent);}
+.chip.type-active{background:#1e1e3a;border-color:var(--accent2);color:var(--accent2);}
 
-.tabs { display: flex; border-bottom: 1px solid var(--border); padding: 0 16px; }
-.tab { flex: 1; text-align: center; padding: 10px 0; font-size: 12px; color: var(--muted); cursor: pointer; border-bottom: 2px solid transparent; transition: all .15s; }
-.tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+.result-info{padding:6px 16px;font-size:11px;color:var(--muted);border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;}
+.clear-filter{color:var(--accent3);cursor:pointer;font-size:11px;}
 
-.card-list { flex: 1; overflow-y: auto; padding: 12px 16px 80px; -webkit-overflow-scrolling: touch; }
-.card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px; margin-bottom: 10px; cursor: pointer; transition: all .15s; position: relative; }
-.card:active { transform: scale(0.98); opacity: 0.9; }
-.card-top { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
-.avatar { width: 42px; height: 42px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; flex-shrink: 0; }
-.card-info { flex: 1; min-width: 0; }
-.card-name { font-size: 15px; font-weight: 700; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.card-industry { font-size: 11px; color: var(--muted); }
-.card-type-badge { font-size: 10px; padding: 2px 8px; border-radius: 10px; font-family: 'Space Mono', monospace; flex-shrink: 0; }
-.badge-company { background: #1e2a1e; color: var(--accent); }
-.badge-youtube { background: #2a1e1e; color: var(--accent3); }
-.badge-web { background: #1e1e2a; color: var(--accent2); }
-.badge-note { background: #2a2a1e; color: var(--accent4); }
-.badge-image { background: #1e2a2a; color: #4fd1ff; }
-.card-desc { font-size: 13px; color: var(--muted); line-height: 1.5; margin-bottom: 10px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-.card-tags { display: flex; flex-wrap: wrap; gap: 5px; }
-.tag { background: #1e2a1e; color: var(--accent); border: 1px solid #2a4a2a; border-radius: 4px; padding: 2px 8px; font-size: 11px; cursor: pointer; }
+.card-list{flex:1;overflow-y:auto;padding:12px 16px 80px;-webkit-overflow-scrolling:touch;}
 
-.group-header { padding: 8px 0 6px; font-family: 'Space Mono', monospace; font-size: 11px; color: var(--accent2); letter-spacing: 1px; border-bottom: 1px solid var(--border); margin-bottom: 8px; margin-top: 16px; display: flex; align-items: center; gap: 8px; }
-.group-header:first-child { margin-top: 0; }
-.group-count { font-size: 10px; color: var(--muted); background: var(--surface2); border-radius: 8px; padding: 1px 7px; }
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:10px;cursor:pointer;transition:all .15s;}
+.card:active{transform:scale(0.98);opacity:0.9;}
+.card-top{display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;}
+.avatar{width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px;flex-shrink:0;}
+.card-info{flex:1;min-width:0;}
+.card-name{font-size:15px;font-weight:700;margin-bottom:3px;line-height:1.3;}
+.card-category{font-size:11px;color:var(--muted);margin-bottom:6px;}
+.card-memo{font-size:12px;color:var(--muted);line-height:1.7;white-space:pre-wrap;word-break:break-word;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden;}
+.card-tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px;}
+.tag{background:#1e2a1e;color:var(--accent);border:1px solid #2a4a2a;border-radius:4px;padding:2px 8px;font-size:11px;cursor:pointer;}
+.card-actions{display:flex;gap:6px;margin-top:10px;}
+.card-action-btn{flex:1;padding:8px;border-radius:8px;font-size:12px;cursor:pointer;font-family:'Noto Sans JP',sans-serif;border:none;font-weight:500;text-align:center;}
+.btn-claude{background:#1e1e3a;color:var(--accent2);border:1px solid var(--accent2);}
+.btn-edit{background:var(--surface2);color:var(--muted);}
+.btn-delete{background:#2a1e1e;color:var(--accent3);}
 
-.empty { text-align: center; padding: 60px 20px; color: var(--muted); font-size: 14px; }
-.empty .icon { font-size: 40px; margin-bottom: 12px; }
+.empty{text-align:center;padding:60px 20px;color:var(--muted);font-size:14px;}
+.empty .icon{font-size:40px;margin-bottom:12px;}
 
-.result-info { padding: 6px 16px; font-size: 11px; color: var(--muted); border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
-.clear-filter { color: var(--accent3); cursor: pointer; font-size: 11px; }
+/* Add Sheet */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:100;display:flex;flex-direction:column;justify-content:flex-end;opacity:0;pointer-events:none;transition:opacity .2s;}
+.overlay.open{opacity:1;pointer-events:all;}
+.sheet{background:var(--surface);border-radius:20px 20px 0 0;max-height:92vh;overflow-y:auto;padding:0 0 40px;transform:translateY(100%);transition:transform .25s cubic-bezier(.25,.8,.25,1);-webkit-overflow-scrolling:touch;}
+.overlay.open .sheet{transform:translateY(0);}
+.sheet-handle{width:36px;height:4px;background:var(--border);border-radius:2px;margin:12px auto 16px;}
+.add-sheet{padding:0 20px 20px;}
+.add-sheet h2{font-size:18px;font-weight:700;margin-bottom:6px;}
+.add-sheet p{font-size:13px;color:var(--muted);margin-bottom:20px;}
 
-.overlay { position: fixed; inset: 0; background: rgba(0,0,0,.85); z-index: 100; display: flex; flex-direction: column; justify-content: flex-end; opacity: 0; pointer-events: none; transition: opacity .2s; }
-.overlay.open { opacity: 1; pointer-events: all; }
-.sheet { background: var(--surface); border-radius: 20px 20px 0 0; max-height: 88vh; overflow-y: auto; padding: 0 0 40px; transform: translateY(100%); transition: transform .25s cubic-bezier(.25,.8,.25,1); -webkit-overflow-scrolling: touch; }
-.overlay.open .sheet { transform: translateY(0); }
-.sheet-handle { width: 36px; height: 4px; background: var(--border); border-radius: 2px; margin: 12px auto 16px; }
-.sheet-header { padding: 0 20px 16px; border-bottom: 1px solid var(--border); margin-bottom: 16px; }
-.sheet-title { font-size: 20px; font-weight: 700; margin-bottom: 4px; }
-.sheet-sub { font-size: 12px; color: var(--muted); }
-.sheet-body { padding: 0 20px; }
-.detail-section { margin-bottom: 20px; }
-.detail-label { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--muted); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 8px; }
-.info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-.info-cell { background: var(--surface2); border-radius: 8px; padding: 10px 12px; }
-.info-cell-label { font-size: 11px; color: var(--muted); margin-bottom: 3px; }
-.info-cell-value { font-size: 13px; font-weight: 500; }
-.detail-text { background: var(--surface2); border-radius: 8px; padding: 12px; font-size: 13px; color: var(--muted); line-height: 1.7; }
-.sheet-tags { display: flex; flex-wrap: wrap; gap: 6px; }
-.sheet-actions { display: flex; gap: 8px; margin-top: 16px; }
-.action-btn { flex: 1; padding: 12px; border-radius: 10px; font-size: 13px; cursor: pointer; font-family: 'Noto Sans JP', sans-serif; border: none; font-weight: 500; }
-.action-edit { background: var(--surface2); color: var(--text); }
-.action-delete { background: #2a1e1e; color: var(--accent3); }
-.action-link { background: #1e1e2a; color: var(--accent2); text-decoration: none; display: flex; align-items: center; justify-content: center; }
-
-.add-sheet { padding: 0 20px 40px; }
-.add-sheet h2 { font-size: 18px; font-weight: 700; margin-bottom: 6px; }
-.add-sheet p { font-size: 13px; color: var(--muted); margin-bottom: 20px; }
-.field-label { font-size: 12px; color: var(--muted); margin-bottom: 5px; }
-.field-input, .field-textarea { width: 100%; background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; color: var(--text); font-family: 'Noto Sans JP', sans-serif; font-size: 14px; outline: none; margin-bottom: 14px; -webkit-appearance: none; }
-.field-input:focus, .field-textarea:focus { border-color: var(--accent); }
-.field-textarea { min-height: 90px; resize: none; }
-.type-selector { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin-bottom: 14px; }
-.type-btn { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 8px 4px; text-align: center; cursor: pointer; font-size: 11px; color: var(--muted); transition: all .15s; }
-.type-btn .type-icon { font-size: 18px; display: block; margin-bottom: 3px; }
-.type-btn.selected { border-color: var(--accent); color: var(--accent); background: #1e2a1e; }
-.save-btn { width: 100%; padding: 14px; background: var(--accent); border: none; border-radius: 12px; font-size: 15px; font-weight: 700; color: #000; cursor: pointer; font-family: 'Noto Sans JP', sans-serif; margin-top: 6px; }
-.field-group { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-.field-group > div { display: flex; flex-direction: column; }
-.img-preview { width: 100%; border-radius: 10px; margin-bottom: 14px; display: none; max-height: 200px; object-fit: cover; }
+.field-label{font-size:12px;color:var(--muted);margin-bottom:5px;}
+.field-input,.field-textarea{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px 14px;color:var(--text);font-family:'Noto Sans JP',sans-serif;font-size:14px;outline:none;margin-bottom:14px;-webkit-appearance:none;}
+.field-input:focus,.field-textarea:focus{border-color:var(--accent);}
+.field-textarea{min-height:160px;resize:none;line-height:1.7;}
+.field-textarea::placeholder{color:var(--muted);}
 
 /* Claude Import */
-.claude-import-box { background: #12122a; border: 1.5px solid var(--accent2); border-radius: 14px; padding: 16px; margin-bottom: 20px; }
-.claude-import-title { font-size: 13px; font-weight: 700; color: var(--accent2); margin-bottom: 4px; }
-.claude-import-desc { font-size: 11px; color: var(--muted); line-height: 1.6; margin-bottom: 12px; }
-.claude-steps { display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; }
-.claude-step { display: flex; align-items: flex-start; gap: 8px; font-size: 11px; color: var(--muted); line-height: 1.5; }
-.step-num { width: 18px; height: 18px; border-radius: 50%; background: var(--accent2); color: #fff; font-size: 10px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
-.copy-prompt-btn { width: 100%; padding: 10px; border-radius: 10px; background: var(--accent2); border: none; color: #fff; font-size: 13px; font-weight: 700; cursor: pointer; font-family: 'Noto Sans JP', sans-serif; margin-bottom: 10px; }
-.divider { display: flex; align-items: center; gap: 8px; margin: 12px 0; }
-.divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
-.divider span { font-size: 11px; color: var(--muted); }
-.json-paste-area { width: 100%; background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; color: var(--text); font-family: 'Space Mono', monospace; font-size: 11px; outline: none; min-height: 80px; resize: none; margin-bottom: 10px; line-height: 1.5; }
-.json-paste-area:focus { border-color: var(--accent2); }
-.json-paste-area::placeholder { color: var(--muted); font-family: 'Noto Sans JP', sans-serif; font-size: 12px; }
-.apply-json-btn { width: 100%; padding: 10px; border-radius: 10px; background: #1e1e3a; border: 1px solid var(--accent2); color: var(--accent2); font-size: 13px; font-weight: 700; cursor: pointer; font-family: 'Noto Sans JP', sans-serif; }
-.json-error { font-size: 11px; color: var(--accent3); margin-top: -6px; margin-bottom: 8px; display: none; }
-.json-success { font-size: 11px; color: var(--accent); margin-top: -6px; margin-bottom: 8px; display: none; }
+.claude-import-box{background:#12122a;border:1.5px solid var(--accent2);border-radius:14px;padding:16px;margin-bottom:20px;}
+.claude-import-title{font-size:13px;font-weight:700;color:var(--accent2);margin-bottom:8px;}
+.claude-steps{display:flex;flex-direction:column;gap:6px;margin-bottom:12px;}
+.claude-step{display:flex;align-items:flex-start;gap:8px;font-size:11px;color:var(--muted);line-height:1.5;}
+.step-num{width:18px;height:18px;border-radius:50%;background:var(--accent2);color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+.copy-prompt-btn{width:100%;padding:10px;border-radius:10px;background:var(--accent2);border:none;color:#fff;font-size:13px;font-weight:700;cursor:pointer;font-family:'Noto Sans JP',sans-serif;margin-bottom:10px;}
+.divider{display:flex;align-items:center;gap:8px;margin:10px 0;}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border);}
+.divider span{font-size:11px;color:var(--muted);}
+.json-paste-area{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px 14px;color:var(--text);font-family:'Space Mono',monospace;font-size:11px;outline:none;min-height:70px;resize:none;margin-bottom:8px;}
+.json-paste-area:focus{border-color:var(--accent2);}
+.apply-json-btn{width:100%;padding:10px;border-radius:10px;background:#1e1e3a;border:1px solid var(--accent2);color:var(--accent2);font-size:13px;font-weight:700;cursor:pointer;font-family:'Noto Sans JP',sans-serif;}
+.msg{font-size:11px;margin-bottom:8px;display:none;}
+.msg.err{color:var(--accent3);}
+.msg.ok{color:var(--accent);}
 
-.ctx-menu { position: fixed; z-index: 300; background: var(--surface); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; box-shadow: 0 8px 32px rgba(0,0,0,.6); min-width: 200px; animation: ctxIn .15s ease; }
-@keyframes ctxIn { from { opacity:0; transform:scale(.95); } to { opacity:1; transform:scale(1); } }
-.ctx-item { display: flex; align-items: center; gap: 12px; padding: 14px 18px; font-size: 15px; cursor: pointer; border-bottom: 1px solid var(--border); }
-.ctx-item:last-child { border-bottom: none; }
-.ctx-item:active { background: var(--surface2); }
-.ctx-item.danger { color: var(--accent3); }
-.ctx-backdrop { position: fixed; inset: 0; z-index: 299; }
-::-webkit-scrollbar { width: 4px; }
-::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
-.toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--surface2); border: 1px solid var(--border); border-radius: 20px; padding: 10px 20px; font-size: 13px; color: var(--text); z-index: 500; opacity: 0; transition: all .3s; pointer-events: none; white-space: nowrap; }
-.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+.save-btn{width:100%;padding:14px;background:var(--accent);border:none;border-radius:12px;font-size:15px;font-weight:700;color:#000;cursor:pointer;font-family:'Noto Sans JP',sans-serif;margin-top:6px;}
+
+.ctx-menu{position:fixed;z-index:300;background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,.6);min-width:200px;animation:ctxIn .15s ease;}
+@keyframes ctxIn{from{opacity:0;transform:scale(.95);}to{opacity:1;transform:scale(1);}}
+.ctx-item{display:flex;align-items:center;gap:12px;padding:14px 18px;font-size:15px;cursor:pointer;border-bottom:1px solid var(--border);}
+.ctx-item:last-child{border-bottom:none;}
+.ctx-item:active{background:var(--surface2);}
+.ctx-item.danger{color:var(--accent3);}
+.ctx-backdrop{position:fixed;inset:0;z-index:299;}
+
+.toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:10px 20px;font-size:13px;color:var(--text);z-index:500;opacity:0;transition:all .3s;pointer-events:none;white-space:nowrap;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+::-webkit-scrollbar{width:4px;}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
 </style>
 </head>
 <body>
+
 <div class="topbar">
   <div class="app-title">企業DB</div>
   <div class="search-box">
     <span class="search-icon">⌕</span>
-    <input type="search" id="search" placeholder="企業名・キーワードで検索..." oninput="render()">
+    <input type="search" id="search" placeholder="名前・キーワードで検索..." oninput="render()">
   </div>
   <button class="add-btn" onclick="openAdd()">+</button>
 </div>
+
 <div class="filter-bar" id="filter-bar"></div>
-<div class="tabs">
-  <div class="tab active" id="tab-all" onclick="setTab('all')">📋 すべて</div>
-  <div class="tab" id="tab-group" onclick="setTab('group')">⊛ グループ</div>
-  <div class="tab" id="tab-kw" onclick="setTab('kw')">🏷 キーワード</div>
-</div>
+
 <div class="result-info">
   <span id="result-count"></span>
   <span class="clear-filter" id="clear-btn" onclick="clearFilters()" style="display:none">✕ リセット</span>
 </div>
+
 <div class="card-list" id="card-list"></div>
 
-<div class="overlay" id="detail-overlay" onclick="closeDetail(event)">
-  <div class="sheet"><div class="sheet-handle"></div><div id="detail-content"></div></div>
-</div>
-
+<!-- Add/Edit Sheet -->
 <div class="overlay" id="add-overlay" onclick="closeAdd(event)">
   <div class="sheet">
     <div class="sheet-handle" onclick="closeAddDirect()"></div>
     <div class="add-sheet">
-      <h2>📥 情報を追加</h2>
-      <p>企業情報・メモ・URLなど何でも登録できます</p>
+      <h2 id="add-title">📥 情報を追加</h2>
+      <p>企業・メモ・気になった情報など何でも</p>
+
       <div class="claude-import-box">
         <div class="claude-import-title">🤖 Claude AIで画像から自動入力</div>
-        <div class="claude-import-desc">手書きメモ・印刷資料・スクショをClaudeに読ませて自動入力できます</div>
         <div class="claude-steps">
           <div class="claude-step"><span class="step-num">1</span>下のボタンでプロンプトをコピー</div>
-          <div class="claude-step"><span class="step-num">2</span>Claude.aiを開いて画像と一緒に貼り付けて送信</div>
-          <div class="claude-step"><span class="step-num">3</span>返ってきたJSONを下の枠に貼り付け</div>
-          <div class="claude-step"><span class="step-num">4</span>「フォームに反映」ボタンを押すだけ！</div>
+          <div class="claude-step"><span class="step-num">2</span>Claude.aiで画像と一緒に送信</div>
+          <div class="claude-step"><span class="step-num">3</span>返ってきたJSONを下に貼り付け→反映</div>
         </div>
-        <button class="copy-prompt-btn" onclick="copyPrompt()">📋 プロンプトをコピーする</button>
-        <div class="divider"><span>Claudeの返答をここに貼り付け</span></div>
-        <textarea class="json-paste-area" id="json-paste" placeholder="ClaudeのJSONをここに貼り付けてください..."></textarea>
-        <div class="json-error" id="json-error"></div>
-        <div class="json-success" id="json-success"></div>
+        <button class="copy-prompt-btn" onclick="copyPrompt()">📋 プロンプトをコピー</button>
+        <div class="divider"><span>または返答のJSONを貼り付け</span></div>
+        <textarea class="json-paste-area" id="json-paste" placeholder="ClaudeのJSONをここに貼り付け..."></textarea>
+        <div class="msg err" id="json-error"></div>
+        <div class="msg ok" id="json-success"></div>
         <button class="apply-json-btn" onclick="applyJson()">✨ フォームに反映する</button>
       </div>
-      <div class="field-label">種類を選んでください</div>
-      <div class="type-selector">
-        <div class="type-btn selected" data-type="company" onclick="selectType('company')"><span class="type-icon">🏢</span>企業</div>
-        <div class="type-btn" data-type="note" onclick="selectType('note')"><span class="type-icon">📝</span>メモ</div>
-        <div class="type-btn" data-type="youtube" onclick="selectType('youtube')"><span class="type-icon">▶️</span>YouTube</div>
-        <div class="type-btn" data-type="web" onclick="selectType('web')"><span class="type-icon">🌐</span>Web</div>
-        <div class="type-btn" data-type="image" onclick="selectType('image')"><span class="type-icon">🖼</span>画像</div>
-      </div>
-      <div class="field-label">タイトル / 企業名 *</div>
-      <input class="field-input" id="f-name" type="text" placeholder="例：株式会社〇〇">
-      <div id="url-field">
-        <div class="field-label" id="url-label">URL</div>
-        <input class="field-input" id="f-url" type="url" placeholder="https://">
-      </div>
-      <div class="field-label">業種 / カテゴリ</div>
-      <input class="field-input" id="f-industry" type="text" placeholder="例：IT・ソフトウェア">
-      <div class="field-group">
-        <div><div class="field-label">所在地</div><input class="field-input" id="f-location" type="text" placeholder="例：東京都"></div>
-        <div><div class="field-label">従業員数</div><input class="field-input" id="f-employees" type="text" placeholder="例：100名"></div>
-      </div>
-      <div class="field-group">
-        <div><div class="field-label">設立</div><input class="field-input" id="f-founded" type="text" placeholder="例：2015年"></div>
-        <div><div class="field-label">売上規模</div><input class="field-input" id="f-revenue" type="text" placeholder="例：10億円"></div>
-      </div>
-      <div class="field-label">概要・内容</div>
-      <textarea class="field-textarea" id="f-desc" placeholder="事業内容、会話の要約など..."></textarea>
+
+      <div class="field-label">名前・タイトル *</div>
+      <input class="field-input" id="f-name" type="text" placeholder="例：株式会社〇〇 / AIセクターまとめ">
+
+      <div class="field-label">カテゴリ</div>
+      <input class="field-input" id="f-category" type="text" placeholder="例：投資メモ・企業・ニュース">
+
+      <div class="field-label">メモ・データ（自由に箇条書きでOK）</div>
+      <textarea class="field-textarea" id="f-memo" placeholder="・売上：〇〇億円&#10;・主力製品：〇〇&#10;・製造拠点：中国・タイ&#10;・気になる点：〇〇&#10;&#10;何でも自由に書いてください"></textarea>
+
       <div class="field-label">キーワード（スペース区切り）</div>
-      <input class="field-input" id="f-keywords" type="text" placeholder="例：AI DX クラウド">
-      <div class="field-label">メモ・備考</div>
-      <textarea class="field-textarea" id="f-note" placeholder="担当者メモ、次のアクションなど..."></textarea>
-      <div id="image-field" style="display:none">
-        <div class="field-label">画像を選択</div>
-        <input type="file" id="f-image" accept="image/*" onchange="previewImage(event)" style="color:var(--muted);width:100%;margin-bottom:14px">
-        <img class="img-preview" id="img-preview">
-      </div>
+      <input class="field-input" id="f-keywords" type="text" placeholder="例：AI 半導体 電力インフラ">
+
+      <div class="field-label">URL（あれば）</div>
+      <input class="field-input" id="f-url" type="url" placeholder="https://">
+
       <button class="save-btn" onclick="saveEntry()">✓ 保存する</button>
     </div>
   </div>
@@ -247,45 +179,30 @@ body { background: var(--bg); color: var(--text); font-family: 'Noto Sans JP', s
 const CLAUDE_PROMPT = `この画像に書かれている情報を読み取って、以下のJSON形式だけで返してください。わからない項目は""にしてください。説明文は不要です。
 
 {
-  "type": "company",
-  "name": "企業名またはタイトル",
-  "industry": "業種・カテゴリ",
-  "location": "所在地",
-  "employees": "従業員数",
-  "founded": "設立年",
-  "revenue": "売上規模",
-  "desc": "概要・内容（できるだけ詳しく）",
+  "name": "タイトルまたは企業名",
+  "category": "カテゴリ・業種",
+  "memo": "画像の内容を箇条書きで詳しく（改行区切り）",
   "keywords": ["キーワード1", "キーワード2", "キーワード3"],
-  "url": "URLがあれば",
-  "note": "その他メモ・備考"
-}
+  "url": ""
+}`;
 
-typeは "company" / "note" / "web" / "youtube" / "image" から選んでください。`;
+const COLORS = ['#4fffb0','#7b6fff','#ff6b6b','#ffd166','#4fd1ff','#ff9f43','#ee5a24'];
 
 const SAMPLE = [
-  { id:1, type:'company', name:"株式会社テックビジョン", industry:"IT・ソフトウェア", founded:"2015年", employees:"250名", location:"東京都渋谷区", revenue:"30億円", desc:"AIとクラウドを活用した業務効率化ソリューションを提供。製造業・物流向けのDXを推進。", keywords:["AI","クラウド","DX","SaaS"], url:"", note:"2023年にシリーズBで15億円調達。", color:"#4fffb0", initials:"TV" },
-  { id:2, type:'company', name:"グリーンエナジー株式会社", industry:"エネルギー", founded:"2010年", employees:"480名", location:"大阪府大阪市", revenue:"120億円", desc:"太陽光・風力発電の設計・施工・運用管理を行う再生可能エネルギー専門企業。", keywords:["再生可能エネルギー","SDGs","脱炭素"], url:"", note:"全国150か所以上の発電所を運営。", color:"#7b6fff", initials:"GE" },
-  { id:3, type:'youtube', name:"DX推進セミナー2024 | 製造業のAI活用事例", industry:"参照資料", founded:"", employees:"", location:"", revenue:"", desc:"製造業でのAI導入事例を紹介するYouTube動画。品質管理・予知保全・物流最適化の3テーマ。", keywords:["AI","DX","製造業"], url:"https://youtube.com/watch?v=example", note:"1:23:00あたりの事例が参考になる。", color:"#ff6b6b", initials:"YT" },
-  { id:4, type:'note', name:"住民ヒアリング：田中さん（農業従事者）", industry:"住民対話", founded:"", employees:"", location:"北区", revenue:"", desc:"農業の後継者不足・IoT導入への関心あり。スマート農業に興味を持っている。", keywords:["農業","IoT","補助金"], url:"", note:"紹介していただいた企業：アグリテック株式会社", color:"#ffd166", initials:"📝" },
-  { id:5, type:'web', name:"農林水産省｜スマート農業の推進", industry:"政府資料", founded:"", employees:"", location:"", revenue:"", desc:"スマート農業実証プロジェクトの2024年度採択企業一覧。補助率2/3、上限5000万円。", keywords:["農業","補助金","SDGs"], url:"https://www.maff.go.jp/", note:"毎年更新される。", color:"#7b6fff", initials:"🌐" },
-  { id:6, type:'company', name:"メディカルAI株式会社", industry:"ヘルスケア", founded:"2016年", employees:"160名", location:"神奈川県横浜市", revenue:"22億円", desc:"AIによる医療画像診断支援システムを開発。全国300以上の医療機関に導入実績。", keywords:["AI","医療","ヘルスケア","DX"], url:"", note:"厚生労働省の医療AIガイドライン策定に参画中。", color:"#4fffb0", initials:"MA" },
+  { id:1, name:"AIセクター投資メモ", category:"投資メモ", memo:"・電力・エネルギーインフラが最重要\n・データセンター向け電力需要が急増\n・電力会社（原子力・再生可能エネルギー）が有望\n・半導体：GPU・HBMメモリが鍵\n・NVIDIAだけでなくマイクロン・SKハイニックスも注目\n・短期では電力・インフラが最も確実", keywords:["AI","電力","半導体","インフラ"], url:"", color:"#4fffb0" },
+  { id:2, name:"株式会社テックビジョン", category:"IT・SaaS", memo:"・設立：2015年\n・従業員：250名\n・所在地：東京都渋谷区\n・売上：30億円\n・AIとクラウドを活用した業務効率化\n・製造業・物流向けDX推進\n・2023年シリーズBで15億円調達", keywords:["AI","クラウド","DX"], url:"", color:"#7b6fff" },
 ];
 
-let entries=[], activeKws=new Set(), activeType=null, currentTab='all', editId=null, selectedType='company', imageData=null;
+let entries=[], activeKws=new Set(), editId=null;
 
-function loadData(){
-  try{ const s=localStorage.getItem('corpdb_v3'); if(s) entries=JSON.parse(s); else{ entries=SAMPLE.map(x=>({...x})); saveData(); } }
-  catch(e){ entries=SAMPLE.map(x=>({...x})); }
-}
-function saveData(){ try{ localStorage.setItem('corpdb_v3',JSON.stringify(entries)); }catch(e){} }
-
+function loadData(){ try{ const s=localStorage.getItem('corpdb_v4'); if(s) entries=JSON.parse(s); else{ entries=SAMPLE.map(x=>({...x})); saveData(); } }catch(e){ entries=SAMPLE.map(x=>({...x})); } }
+function saveData(){ try{ localStorage.setItem('corpdb_v4',JSON.stringify(entries)); }catch(e){} }
 function showToast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2500); }
 
 function copyPrompt(){
-  if(navigator.clipboard){ navigator.clipboard.writeText(CLAUDE_PROMPT).then(()=>showToast('✓ コピーしました！Claude.aiに画像と一緒に貼り付けてください')).catch(()=>fallbackCopy()); }
-  else fallbackCopy();
+  const fn = () => { const ta=document.createElement('textarea'); ta.value=CLAUDE_PROMPT; ta.style.cssText='position:fixed;opacity:0'; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); showToast('✓ コピーしました！Claude.aiに画像と一緒に貼り付けてください'); };
+  if(navigator.clipboard){ navigator.clipboard.writeText(CLAUDE_PROMPT).then(()=>showToast('✓ コピーしました！Claude.aiに画像と一緒に貼り付けてください')).catch(fn); } else fn();
 }
-function fallbackCopy(){ const ta=document.createElement('textarea'); ta.value=CLAUDE_PROMPT; ta.style.cssText='position:fixed;opacity:0'; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); showToast('✓ コピーしました！'); }
 
 function applyJson(){
   const raw=document.getElementById('json-paste').value.trim();
@@ -294,15 +211,15 @@ function applyJson(){
   if(!raw){ errEl.textContent='⚠️ テキストを貼り付けてください'; errEl.style.display='block'; return; }
   let jsonStr=raw;
   const match=raw.match(/```(?:json)?\s*([\s\S]*?)```/); if(match) jsonStr=match[1].trim();
-  const bs=jsonStr.indexOf('{'), be=jsonStr.lastIndexOf('}');
+  const bs=jsonStr.indexOf('{'),be=jsonStr.lastIndexOf('}');
   if(bs!==-1&&be!==-1) jsonStr=jsonStr.slice(bs,be+1);
-  let data;
-  try{ data=JSON.parse(jsonStr); }
-  catch(e){ errEl.textContent='⚠️ JSONの解析に失敗しました。ClaudeのJSONをそのまま貼り付けてください'; errEl.style.display='block'; return; }
-  if(data.type) selectType(data.type);
-  ['name','url','industry','location','employees','founded','revenue','desc','note'].forEach(k=>{ if(data[k]) document.getElementById('f-'+k).value=data[k]; });
+  let data; try{ data=JSON.parse(jsonStr); }catch(e){ errEl.textContent='⚠️ 形式エラー。ClaudeのJSONをそのまま貼り付けてください'; errEl.style.display='block'; return; }
+  if(data.name) document.getElementById('f-name').value=data.name;
+  if(data.category) document.getElementById('f-category').value=data.category;
+  if(data.memo) document.getElementById('f-memo').value=data.memo;
+  if(data.url) document.getElementById('f-url').value=data.url;
   if(data.keywords){ document.getElementById('f-keywords').value=Array.isArray(data.keywords)?data.keywords.join(' '):data.keywords; }
-  okEl.textContent='✓ フォームに反映しました！内容を確認して保存してください'; okEl.style.display='block';
+  okEl.textContent='✓ 反映しました！内容確認して保存してください'; okEl.style.display='block';
   document.getElementById('json-paste').value='';
   document.getElementById('f-name').scrollIntoView({behavior:'smooth',block:'center'});
 }
@@ -310,131 +227,112 @@ function applyJson(){
 function renderFilters(){
   const bar=document.getElementById('filter-bar');
   const allKws=[...new Set(entries.flatMap(e=>e.keywords||[]))].sort();
-  const types=[{k:'company',label:'🏢 企業'},{k:'note',label:'📝 メモ'},{k:'youtube',label:'▶️ YouTube'},{k:'web',label:'🌐 Web'},{k:'image',label:'🖼 画像'}];
-  let html=types.map(t=>{ const cnt=entries.filter(e=>e.type===t.k).length; if(!cnt) return ''; return `<div class="chip${activeType===t.k?' industry active':''}" onclick="toggleType('${t.k}')">${t.label} <span style="opacity:.5">${cnt}</span></div>`; }).join('');
-  html+=allKws.map(kw=>{ const cnt=entries.filter(e=>(e.keywords||[]).includes(kw)).length; return `<div class="chip${activeKws.has(kw)?' active':''}" onclick="toggleKw('${kw}')">${kw} <span style="opacity:.5">${cnt}</span></div>`; }).join('');
-  bar.innerHTML=html;
+  bar.innerHTML=allKws.map(kw=>{ const cnt=entries.filter(e=>(e.keywords||[]).includes(kw)).length; return `<div class="chip${activeKws.has(kw)?' active':''}" onclick="toggleKw('${kw}')">${kw} <span style="opacity:.5">${cnt}</span></div>`; }).join('');
 }
 function toggleKw(kw){ if(activeKws.has(kw)) activeKws.delete(kw); else activeKws.add(kw); render(); }
-function toggleType(t){ activeType=activeType===t?null:t; render(); }
-function clearFilters(){ activeKws.clear(); activeType=null; document.getElementById('search').value=''; render(); }
-function setTab(t){ currentTab=t; ['all','group','kw'].forEach(x=>document.getElementById('tab-'+x).classList.toggle('active',x===t)); render(); }
+function clearFilters(){ activeKws.clear(); document.getElementById('search').value=''; render(); }
 
 function getFiltered(){
   const q=document.getElementById('search').value.toLowerCase();
   return entries.filter(e=>{
-    const mQ=!q||e.name.toLowerCase().includes(q)||(e.desc||'').toLowerCase().includes(q)||(e.keywords||[]).some(k=>k.toLowerCase().includes(q))||(e.note||'').toLowerCase().includes(q);
+    const mQ=!q||e.name.toLowerCase().includes(q)||(e.memo||'').toLowerCase().includes(q)||(e.keywords||[]).some(k=>k.toLowerCase().includes(q));
     const mK=activeKws.size===0||[...activeKws].every(kw=>(e.keywords||[]).includes(kw));
-    const mT=!activeType||e.type===activeType;
-    return mQ&&mK&&mT;
+    return mQ&&mK;
   });
 }
 
 function render(){
   renderFilters();
   const filtered=getFiltered();
-  const hasFilter=activeKws.size>0||activeType||document.getElementById('search').value;
+  const hasFilter=activeKws.size>0||document.getElementById('search').value;
   document.getElementById('clear-btn').style.display=hasFilter?'':'none';
   document.getElementById('result-count').textContent=`${filtered.length} 件 / 全 ${entries.length} 件`;
   const list=document.getElementById('card-list');
-  if(!filtered.length){ list.innerHTML='<div class="empty"><div class="icon">🔍</div>条件に一致する情報が見つかりませんでした</div>'; return; }
-  if(currentTab==='group') renderGroup(filtered,list);
-  else if(currentTab==='kw') renderKwGroup(filtered,list);
-  else list.innerHTML=filtered.map(cardHTML).join('');
+  if(!filtered.length){ list.innerHTML='<div class="empty"><div class="icon">🔍</div>見つかりませんでした</div>'; return; }
+  list.innerHTML=filtered.map(cardHTML).join('');
 }
-function renderGroup(f,list){ const g={}; f.forEach(e=>{ const k=e.industry||'未分類'; if(!g[k]) g[k]=[]; g[k].push(e); }); list.innerHTML=Object.entries(g).map(([k,items])=>`<div class="group-header">${k} <span class="group-count">${items.length}</span></div>${items.map(cardHTML).join('')}`).join(''); }
-function renderKwGroup(f,list){ const kws=activeKws.size>0?[...activeKws]:[...new Set(f.flatMap(e=>e.keywords||[]))].sort(); list.innerHTML=kws.map(kw=>{ const items=f.filter(e=>(e.keywords||[]).includes(kw)); if(!items.length) return ''; return `<div class="group-header">🏷 ${kw} <span class="group-count">${items.length}</span></div>${items.map(cardHTML).join('')}`; }).join(''); }
-
-const COLORS={company:'#4fffb0',note:'#ffd166',youtube:'#ff6b6b',web:'#7b6fff',image:'#4fd1ff'};
-const ICONS={company:'🏢',note:'📝',youtube:'▶️',web:'🌐',image:'🖼'};
-const BADGE={company:'badge-company',note:'badge-note',youtube:'badge-youtube',web:'badge-web',image:'badge-image'};
-const BADGELABEL={company:'企業',note:'メモ',youtube:'YouTube',web:'Web',image:'画像'};
 
 function cardHTML(e){
-  const color=e.color||COLORS[e.type]||'#888'; const initials=e.initials||ICONS[e.type]||'?';
+  const color=e.color||'#4fffb0';
+  const initial=e.name?e.name[0]:'?';
   const tags=(e.keywords||[]).map(kw=>`<span class="tag" onclick="event.stopPropagation();toggleKw('${kw}')">${kw}</span>`).join('');
-  return `<div class="card" onclick="openDetail(${e.id})" oncontextmenu="openCtx(event,${e.id})" ontouchstart="startLongPress(event,${e.id})" ontouchend="cancelLongPress()" ontouchmove="cancelLongPress()">
-    <div class="card-top"><div class="avatar" style="background:${color}22;color:${color}">${initials}</div><div class="card-info"><div class="card-name">${e.name}</div><div class="card-industry">${e.industry||''}</div></div><span class="card-type-badge ${BADGE[e.type]||'badge-company'}">${BADGELABEL[e.type]||''}</span></div>
-    ${e.desc?`<div class="card-desc">${e.desc}</div>`:''}
-    ${tags?`<div class="card-tags">${tags}</div>`:''}
+  return `<div class="card">
+    <div class="card-top" onclick="openEdit(${e.id})">
+      <div class="avatar" style="background:${color}22;color:${color}">${initial}</div>
+      <div class="card-info">
+        <div class="card-name">${e.name}</div>
+        ${e.category?`<div class="card-category">${e.category}</div>`:''}
+        ${e.memo?`<div class="card-memo">${e.memo}</div>`:''}
+        ${tags?`<div class="card-tags">${tags}</div>`:''}
+      </div>
+    </div>
+    <div class="card-actions">
+      <button class="card-action-btn btn-claude" onclick="openClaude(${e.id})">🤖 Claudeと話す</button>
+      <button class="card-action-btn btn-edit" onclick="openEdit(${e.id})">✏️ 編集</button>
+      <button class="card-action-btn btn-delete" onclick="deleteEntry(${e.id})">🗑</button>
+    </div>
   </div>`;
 }
 
-function openDetail(id){
+function openClaude(id){
   const e=entries.find(x=>x.id===id); if(!e) return;
-  const color=e.color||COLORS[e.type]||'#888';
-  const tags=(e.keywords||[]).map(kw=>`<span class="tag" onclick="closeDetailDirect();toggleKw('${kw}')">${kw}</span>`).join('');
-  const infoGrid=[e.location&&['所在地',e.location],e.employees&&['従業員数',e.employees],e.revenue&&['売上規模',e.revenue],e.founded&&['設立',e.founded]].filter(Boolean).map(([l,v])=>`<div class="info-cell"><div class="info-cell-label">${l}</div><div class="info-cell-value">${v}</div></div>`).join('');
-  document.getElementById('detail-content').innerHTML=`
-    <div class="sheet-header"><div style="display:flex;align-items:center;gap:12px;margin-bottom:10px"><div class="avatar" style="background:${color}22;color:${color};width:48px;height:48px;font-size:18px">${e.initials||ICONS[e.type]||'?'}</div><div><div class="sheet-title">${e.name}</div><div class="sheet-sub">${e.industry||''}</div></div></div>
-    <div class="sheet-actions"><button class="action-btn action-edit" onclick="openEdit(${e.id})">✏️ 編集</button><button class="action-btn action-delete" onclick="deleteEntry(${e.id})">🗑 削除</button>${e.url?`<a class="action-btn action-link" href="${e.url}" target="_blank">🔗 開く</a>`:''}</div></div>
-    <div class="sheet-body">
-      ${infoGrid?`<div class="detail-section"><div class="detail-label">基本情報</div><div class="info-grid">${infoGrid}</div></div>`:''}
-      ${e.desc?`<div class="detail-section"><div class="detail-label">概要・内容</div><div class="detail-text">${e.desc}</div></div>`:''}
-      ${e.note?`<div class="detail-section"><div class="detail-label">メモ・備考</div><div class="detail-text">${e.note}</div></div>`:''}
-      ${tags?`<div class="detail-section"><div class="detail-label">キーワード</div><div class="sheet-tags">${tags}</div></div>`:''}
-      ${e.imageData?`<div class="detail-section"><div class="detail-label">画像</div><img src="${e.imageData}" style="width:100%;border-radius:10px"></div>`:''}
-    </div>`;
-  document.getElementById('detail-overlay').classList.add('open');
-}
-function closeDetail(e){ if(e.target===document.getElementById('detail-overlay')) closeDetailDirect(); }
-function closeDetailDirect(){ document.getElementById('detail-overlay').classList.remove('open'); }
+  const prompt = `以下は私が集めた情報です。この情報をベースに一緒に考えてください。
 
-function selectType(t){
-  selectedType=t;
-  document.querySelectorAll('.type-btn').forEach(b=>b.classList.toggle('selected',b.dataset.type===t));
-  document.getElementById('url-field').style.display=t==='image'?'none':'';
-  document.getElementById('image-field').style.display=t==='image'?'':'none';
-  document.getElementById('url-label').textContent=t==='youtube'?'YouTube URL':t==='web'?'ページURL':'URL';
+【${e.name}】
+カテゴリ：${e.category||''}
+キーワード：${(e.keywords||[]).join('、')}
+
+${e.memo||''}
+
+${e.url?'URL：'+e.url:''}
+
+---
+まずこの情報について、気になる点・深掘りすべきポイントを教えてください。その後、私の質問に答えてください。`;
+  const url='https://claude.ai/new?q='+encodeURIComponent(prompt);
+  window.open(url,'_blank');
 }
+
 function openAdd(){
-  editId=null; imageData=null;
-  document.getElementById('img-preview').style.display='none';
+  editId=null;
+  document.getElementById('add-title').textContent='📥 情報を追加';
+  ['f-name','f-category','f-memo','f-keywords','f-url'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
   document.getElementById('json-paste').value='';
   document.getElementById('json-error').style.display='none';
   document.getElementById('json-success').style.display='none';
-  ['f-name','f-url','f-industry','f-location','f-employees','f-founded','f-revenue','f-desc','f-keywords','f-note'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
-  selectType('company');
   document.getElementById('add-overlay').classList.add('open');
 }
 function openEdit(id){
   const e=entries.find(x=>x.id===id); if(!e) return;
-  editId=id; closeDetailDirect();
-  document.getElementById('f-name').value=e.name||''; document.getElementById('f-url').value=e.url||'';
-  document.getElementById('f-industry').value=e.industry||''; document.getElementById('f-location').value=e.location||'';
-  document.getElementById('f-employees').value=e.employees||''; document.getElementById('f-founded').value=e.founded||'';
-  document.getElementById('f-revenue').value=e.revenue||''; document.getElementById('f-desc').value=e.desc||'';
-  document.getElementById('f-keywords').value=(e.keywords||[]).join(' '); document.getElementById('f-note').value=e.note||'';
-  if(e.imageData){ imageData=e.imageData; const p=document.getElementById('img-preview'); p.src=e.imageData; p.style.display='block'; }
-  document.getElementById('json-paste').value=''; document.getElementById('json-error').style.display='none'; document.getElementById('json-success').style.display='none';
-  selectType(e.type||'company');
+  editId=id;
+  document.getElementById('add-title').textContent='✏️ 編集';
+  document.getElementById('f-name').value=e.name||'';
+  document.getElementById('f-category').value=e.category||'';
+  document.getElementById('f-memo').value=e.memo||'';
+  document.getElementById('f-keywords').value=(e.keywords||[]).join(' ');
+  document.getElementById('f-url').value=e.url||'';
+  document.getElementById('json-paste').value='';
+  document.getElementById('json-error').style.display='none';
+  document.getElementById('json-success').style.display='none';
   document.getElementById('add-overlay').classList.add('open');
 }
 function closeAdd(e){ if(e.target===document.getElementById('add-overlay')) closeAddDirect(); }
 function closeAddDirect(){ document.getElementById('add-overlay').classList.remove('open'); }
 
 function saveEntry(){
-  const name=document.getElementById('f-name').value.trim(); if(!name){ alert('タイトル / 企業名は必須です'); return; }
+  const name=document.getElementById('f-name').value.trim(); if(!name){ alert('名前・タイトルは必須です'); return; }
   const keywords=document.getElementById('f-keywords').value.split(/[\s、,，]+/).map(k=>k.trim()).filter(Boolean);
-  const entry={ id:editId||Date.now(), type:selectedType, name, industry:document.getElementById('f-industry').value.trim(), location:document.getElementById('f-location').value.trim(), employees:document.getElementById('f-employees').value.trim(), founded:document.getElementById('f-founded').value.trim(), revenue:document.getElementById('f-revenue').value.trim(), desc:document.getElementById('f-desc').value.trim(), keywords, url:document.getElementById('f-url').value.trim(), note:document.getElementById('f-note').value.trim(), color:COLORS[selectedType]||'#4fffb0', initials:ICONS[selectedType]||name.slice(0,2), imageData:imageData||null };
-  if(editId){ const idx=entries.findIndex(x=>x.id===editId); if(idx!==-1){ entry.color=entries[idx].color; entry.initials=entries[idx].initials; entries[idx]=entry; } }
+  const color=editId?(entries.find(x=>x.id===editId)||{}).color||COLORS[entries.length%COLORS.length]:COLORS[entries.length%COLORS.length];
+  const entry={ id:editId||Date.now(), name, category:document.getElementById('f-category').value.trim(), memo:document.getElementById('f-memo').value.trim(), keywords, url:document.getElementById('f-url').value.trim(), color };
+  if(editId){ const idx=entries.findIndex(x=>x.id===editId); if(idx!==-1) entries[idx]=entry; }
   else entries.unshift(entry);
   saveData(); closeAddDirect(); showToast('✓ 保存しました'); render();
 }
-function deleteEntry(id){ if(!confirm('削除しますか？')) return; entries=entries.filter(x=>x.id!==id); saveData(); closeDetailDirect(); render(); }
-function previewImage(event){ const file=event.target.files[0]; if(!file) return; const reader=new FileReader(); reader.onload=e=>{ imageData=e.target.result; const p=document.getElementById('img-preview'); p.src=imageData; p.style.display='block'; }; reader.readAsDataURL(file); }
+function deleteEntry(id){ if(!confirm('削除しますか？')) return; entries=entries.filter(x=>x.id!==id); saveData(); showToast('削除しました'); render(); }
 
 let longPressTimer=null;
 function startLongPress(event,id){ longPressTimer=setTimeout(()=>{ const t=event.touches[0]; openCtx({clientX:t.clientX,clientY:t.clientY,preventDefault:()=>{}},id); },500); }
 function cancelLongPress(){ if(longPressTimer){ clearTimeout(longPressTimer); longPressTimer=null; } }
-function openCtx(event,id){
-  event.preventDefault(); const e=entries.find(x=>x.id===id); if(!e) return;
-  const kwItems=(e.keywords||[]).map(kw=>`<div class="ctx-item" onclick="closeCtx();toggleKw('${kw}')">🏷 「${kw}」で絞り込む</div>`).join('');
-  document.getElementById('ctx-menu').innerHTML=`<div class="ctx-item" onclick="closeCtx();openEdit(${id})">✏️ 編集する</div>${e.url?`<div class="ctx-item" onclick="closeCtx();window.open('${e.url}','_blank')">🔗 URLを開く</div>`:''}${kwItems}<div class="ctx-item danger" onclick="closeCtx();deleteEntry(${id})">🗑 削除する</div>`;
-  const menu=document.getElementById('ctx-menu'); menu.style.display='block'; document.getElementById('ctx-backdrop').style.display='block';
-  const vw=window.innerWidth,vh=window.innerHeight; let x=event.clientX,y=event.clientY; menu.style.left='0'; menu.style.top='0';
-  const mw=menu.offsetWidth,mh=menu.offsetHeight; if(x+mw>vw) x=vw-mw-8; if(y+mh>vh) y=vh-mh-8; menu.style.left=x+'px'; menu.style.top=y+'px';
-}
+function openCtx(event,id){ event.preventDefault(); }
 function closeCtx(){ document.getElementById('ctx-menu').style.display='none'; document.getElementById('ctx-backdrop').style.display='none'; }
 
 if('serviceWorker' in navigator){ window.addEventListener('load',()=>{ navigator.serviceWorker.register('sw.js').catch(()=>{}); }); }
