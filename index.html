@@ -6,162 +6,166 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="企業DB">
-<meta name="theme-color" content="#0d0f14">
-<link rel="manifest" href="manifest.json">
-<title>企業情報DB</title>
+<meta name="theme-color" content="#060810">
+<title>企業DB</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
-:root {
-  --bg:#0d0f14;--surface:#161920;--surface2:#1e2230;--border:#2a2f3d;
-  --accent:#4fffb0;--accent2:#7b6fff;--accent3:#ff6b6b;--accent4:#ffd166;
-  --text:#e8eaf0;--muted:#6b7280;--radius:12px;
+:root{
+  --bg:#060810;--surface:#0d1117;--surface2:#161b27;--border:#1e2535;
+  --accent:#00ffe0;--accent2:#7b6fff;--accent3:#ff4d6d;--accent4:#ffd166;--accent5:#4dffb4;
+  --text:#e8eaf0;--muted:#4a5568;--radius:14px;
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 html,body{height:100%;overflow:hidden;}
 body{background:var(--bg);color:var(--text);font-family:'Noto Sans JP',sans-serif;display:flex;flex-direction:column;}
 
+/* ── TOPBAR ── */
 .topbar{display:flex;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid var(--border);background:var(--bg);position:sticky;top:0;z-index:50;padding-top:max(12px,env(safe-area-inset-top));}
-.app-title{font-family:'Space Mono',monospace;font-size:14px;color:var(--accent);letter-spacing:1px;flex-shrink:0;}
-.search-box{flex:1;position:relative;}
-.search-box input{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:8px 14px 8px 34px;color:var(--text);font-family:'Noto Sans JP',sans-serif;font-size:14px;outline:none;-webkit-appearance:none;}
-.search-box input:focus{border-color:var(--accent);}
+.app-title{font-family:'Space Mono',monospace;font-size:13px;color:var(--accent);letter-spacing:2px;flex-shrink:0;text-shadow:0 0 10px var(--accent);}
+.search-wrap{flex:1;position:relative;}
+.search-input{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:8px 14px 8px 34px;color:var(--text);font-family:'Noto Sans JP',sans-serif;font-size:14px;outline:none;-webkit-appearance:none;}
+.search-input:focus{border-color:var(--accent);box-shadow:0 0 8px rgba(0,255,224,.15);}
 .search-icon{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:14px;}
-.add-btn{width:38px;height:38px;border-radius:50%;background:var(--accent);border:none;display:flex;align-items:center;justify-content:center;font-size:22px;cursor:pointer;flex-shrink:0;color:#000;font-weight:700;}
+.add-btn{width:36px;height:36px;border-radius:50%;background:var(--accent);border:none;display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer;flex-shrink:0;color:#000;font-weight:900;box-shadow:0 0 12px rgba(0,255,224,.4);}
 
-.filter-bar{padding:10px 16px;overflow-x:auto;white-space:nowrap;border-bottom:1px solid var(--border);-webkit-overflow-scrolling:touch;scrollbar-width:none;}
-.filter-bar::-webkit-scrollbar{display:none;}
-.chip{display:inline-flex;align-items:center;gap:5px;background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:5px 12px;font-size:12px;color:var(--muted);cursor:pointer;margin-right:6px;transition:all .15s;white-space:nowrap;}
-.chip.active{background:#1e2a1e;border-color:var(--accent);color:var(--accent);}
-.chip.type-active{background:#1e1e3a;border-color:var(--accent2);color:var(--accent2);}
+/* ── TAG CLOUD ── */
+.tag-cloud{padding:12px 16px;overflow-x:auto;white-space:nowrap;border-bottom:1px solid var(--border);-webkit-overflow-scrolling:touch;scrollbar-width:none;min-height:52px;display:flex;align-items:center;gap:8px;}
+.tag-cloud::-webkit-scrollbar{display:none;}
+.kw-tag{display:inline-flex;align-items:center;gap:4px;background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:5px 12px;font-size:12px;color:var(--muted);cursor:pointer;transition:all .2s;white-space:nowrap;flex-shrink:0;}
+.kw-tag.selected{border-color:var(--accent);color:var(--accent);background:rgba(0,255,224,.08);box-shadow:0 0 8px rgba(0,255,224,.2);}
+.kw-tag .kw-count{font-size:10px;opacity:.5;}
+.kw-tag.selected .kw-count{opacity:.7;}
 
-.result-info{padding:6px 16px;font-size:11px;color:var(--muted);border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;}
-.clear-filter{color:var(--accent3);cursor:pointer;font-size:11px;}
+/* ── STATUS BAR ── */
+.status-bar{padding:5px 16px;font-size:11px;color:var(--muted);border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;font-family:'Space Mono',monospace;}
+.clear-btn{color:var(--accent3);cursor:pointer;}
 
-.card-list{flex:1;overflow-y:auto;padding:12px 16px 80px;-webkit-overflow-scrolling:touch;}
+/* ── CARD LIST ── */
+.card-list{flex:1;overflow-y:auto;padding:14px 16px 80px;-webkit-overflow-scrolling:touch;}
 
-.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:10px;cursor:pointer;transition:all .15s;}
-.card:active{transform:scale(0.98);opacity:0.9;}
-.card-top{display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;}
-.avatar{width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px;flex-shrink:0;}
-.card-info{flex:1;min-width:0;}
-.card-name{font-size:15px;font-weight:700;margin-bottom:3px;line-height:1.3;}
-.card-category{font-size:11px;color:var(--muted);margin-bottom:6px;}
-.card-memo{font-size:12px;color:var(--muted);line-height:1.7;white-space:pre-wrap;word-break:break-word;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden;}
-.card-tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px;}
-.tag{background:#1e2a1e;color:var(--accent);border:1px solid #2a4a2a;border-radius:4px;padding:2px 8px;font-size:11px;cursor:pointer;}
-.card-actions{display:flex;gap:6px;margin-top:10px;}
-.card-action-btn{flex:1;padding:8px;border-radius:8px;font-size:12px;cursor:pointer;font-family:'Noto Sans JP',sans-serif;border:none;font-weight:500;text-align:center;}
-.btn-claude{background:#1e1e3a;color:var(--accent2);border:1px solid var(--accent2);}
-.btn-edit{background:var(--surface2);color:var(--muted);}
-.btn-delete{background:#2a1e1e;color:var(--accent3);}
+/* ── CARD ── */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:12px;overflow:hidden;transition:all .2s;position:relative;}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--card-color,var(--accent)),transparent);}
+.card-header{display:flex;align-items:center;gap:10px;padding:14px 14px 10px;cursor:pointer;}
+.card-dot{width:10px;height:10px;border-radius:50%;background:var(--card-color,var(--accent));box-shadow:0 0 8px var(--card-color,var(--accent));flex-shrink:0;}
+.card-title{font-size:15px;font-weight:700;flex:1;line-height:1.3;}
+.card-category{font-size:10px;color:var(--muted);font-family:'Space Mono',monospace;padding:2px 8px;border:1px solid var(--border);border-radius:10px;flex-shrink:0;}
+.card-tags{display:flex;flex-wrap:wrap;gap:5px;padding:0 14px 10px;}
+.card-tag{background:rgba(0,255,224,.06);color:var(--accent);border:1px solid rgba(0,255,224,.15);border-radius:4px;padding:2px 8px;font-size:11px;cursor:pointer;transition:all .15s;}
+.card-tag:active{background:rgba(0,255,224,.15);}
 
-.empty{text-align:center;padding:60px 20px;color:var(--muted);font-size:14px;}
-.empty .icon{font-size:40px;margin-bottom:12px;}
+/* ── EXPANDED CARD ── */
+.card-body{display:none;padding:0 14px 14px;border-top:1px solid var(--border);margin-top:4px;}
+.card.expanded .card-body{display:block;}
+.card-memo{font-size:13px;color:var(--muted);line-height:1.8;white-space:pre-wrap;word-break:break-word;padding:12px 0;}
+.card-actions{display:flex;gap:8px;margin-top:10px;}
+.action-btn{flex:1;padding:10px 8px;border-radius:10px;font-size:12px;cursor:pointer;font-family:'Noto Sans JP',sans-serif;border:none;font-weight:700;text-align:center;transition:all .15s;}
+.btn-claude{background:rgba(123,111,255,.15);color:var(--accent2);border:1px solid rgba(123,111,255,.3);}
+.btn-claude:active{background:rgba(123,111,255,.25);}
+.btn-edit{background:var(--surface2);color:var(--muted);border:1px solid var(--border);}
+.btn-delete{background:rgba(255,77,109,.08);color:var(--accent3);border:1px solid rgba(255,77,109,.2);}
 
-/* Add Sheet */
-.overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:100;display:flex;flex-direction:column;justify-content:flex-end;opacity:0;pointer-events:none;transition:opacity .2s;}
+/* ── EMPTY ── */
+.empty{text-align:center;padding:60px 20px;color:var(--muted);}
+.empty-icon{font-size:48px;margin-bottom:16px;opacity:.4;}
+.empty-text{font-size:14px;line-height:1.8;}
+
+/* ── OVERLAY / SHEET ── */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:100;display:flex;flex-direction:column;justify-content:flex-end;opacity:0;pointer-events:none;transition:opacity .2s;}
 .overlay.open{opacity:1;pointer-events:all;}
-.sheet{background:var(--surface);border-radius:20px 20px 0 0;max-height:92vh;overflow-y:auto;padding:0 0 40px;transform:translateY(100%);transition:transform .25s cubic-bezier(.25,.8,.25,1);-webkit-overflow-scrolling:touch;}
+.sheet{background:var(--surface);border-radius:24px 24px 0 0;max-height:92vh;overflow-y:auto;transform:translateY(100%);transition:transform .3s cubic-bezier(.25,.8,.25,1);-webkit-overflow-scrolling:touch;border-top:1px solid var(--border);}
 .overlay.open .sheet{transform:translateY(0);}
-.sheet-handle{width:36px;height:4px;background:var(--border);border-radius:2px;margin:12px auto 16px;}
-.add-sheet{padding:0 20px 20px;}
-.add-sheet h2{font-size:18px;font-weight:700;margin-bottom:6px;}
-.add-sheet p{font-size:13px;color:var(--muted);margin-bottom:20px;}
+.sheet-handle{width:40px;height:4px;background:var(--border);border-radius:2px;margin:14px auto;}
+.sheet-body{padding:0 20px 40px;}
+.sheet-title{font-size:18px;font-weight:700;margin-bottom:6px;color:var(--accent);}
+.sheet-sub{font-size:12px;color:var(--muted);margin-bottom:20px;}
 
-.field-label{font-size:12px;color:var(--muted);margin-bottom:5px;}
-.field-input,.field-textarea{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px 14px;color:var(--text);font-family:'Noto Sans JP',sans-serif;font-size:14px;outline:none;margin-bottom:14px;-webkit-appearance:none;}
-.field-input:focus,.field-textarea:focus{border-color:var(--accent);}
-.field-textarea{min-height:160px;resize:none;line-height:1.7;}
-.field-textarea::placeholder{color:var(--muted);}
+/* ── FORM ── */
+.field-label{font-size:11px;color:var(--muted);margin-bottom:5px;letter-spacing:1px;text-transform:uppercase;font-family:'Space Mono',monospace;}
+.field-input,.field-textarea{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px 14px;color:var(--text);font-family:'Noto Sans JP',sans-serif;font-size:14px;outline:none;margin-bottom:16px;-webkit-appearance:none;}
+.field-input:focus,.field-textarea:focus{border-color:var(--accent);box-shadow:0 0 8px rgba(0,255,224,.1);}
+.field-textarea{min-height:180px;resize:none;line-height:1.8;}
+.save-btn{width:100%;padding:14px;background:var(--accent);border:none;border-radius:12px;font-size:15px;font-weight:700;color:#000;cursor:pointer;font-family:'Noto Sans JP',sans-serif;margin-top:4px;box-shadow:0 0 16px rgba(0,255,224,.3);}
 
-/* Claude Import */
-.claude-import-box{background:#12122a;border:1.5px solid var(--accent2);border-radius:14px;padding:16px;margin-bottom:20px;}
-.claude-import-title{font-size:13px;font-weight:700;color:var(--accent2);margin-bottom:8px;}
-.claude-steps{display:flex;flex-direction:column;gap:6px;margin-bottom:12px;}
-.claude-step{display:flex;align-items:flex-start;gap:8px;font-size:11px;color:var(--muted);line-height:1.5;}
-.step-num{width:18px;height:18px;border-radius:50%;background:var(--accent2);color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
-.copy-prompt-btn{width:100%;padding:10px;border-radius:10px;background:var(--accent2);border:none;color:#fff;font-size:13px;font-weight:700;cursor:pointer;font-family:'Noto Sans JP',sans-serif;margin-bottom:10px;}
+/* ── CLAUDE IMPORT ── */
+.import-box{background:#0a0a1f;border:1px solid rgba(123,111,255,.3);border-radius:14px;padding:16px;margin-bottom:20px;}
+.import-title{font-size:12px;font-weight:700;color:var(--accent2);margin-bottom:10px;display:flex;align-items:center;gap:6px;}
+.import-steps{display:flex;flex-direction:column;gap:6px;margin-bottom:12px;}
+.import-step{display:flex;align-items:flex-start;gap:8px;font-size:11px;color:var(--muted);line-height:1.5;}
+.step-num{width:18px;height:18px;border-radius:50%;background:var(--accent2);color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.copy-btn{width:100%;padding:10px;border-radius:10px;background:rgba(123,111,255,.15);border:1px solid rgba(123,111,255,.3);color:var(--accent2);font-size:13px;font-weight:700;cursor:pointer;font-family:'Noto Sans JP',sans-serif;margin-bottom:10px;}
 .divider{display:flex;align-items:center;gap:8px;margin:10px 0;}
 .divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border);}
 .divider span{font-size:11px;color:var(--muted);}
-.json-paste-area{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px 14px;color:var(--text);font-family:'Space Mono',monospace;font-size:11px;outline:none;min-height:70px;resize:none;margin-bottom:8px;}
-.json-paste-area:focus{border-color:var(--accent2);}
-.apply-json-btn{width:100%;padding:10px;border-radius:10px;background:#1e1e3a;border:1px solid var(--accent2);color:var(--accent2);font-size:13px;font-weight:700;cursor:pointer;font-family:'Noto Sans JP',sans-serif;}
-.msg{font-size:11px;margin-bottom:8px;display:none;}
-.msg.err{color:var(--accent3);}
-.msg.ok{color:var(--accent);}
+.paste-area{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px;color:var(--text);font-family:'Space Mono',monospace;font-size:11px;outline:none;min-height:70px;resize:none;margin-bottom:8px;line-height:1.5;}
+.paste-area:focus{border-color:var(--accent2);}
+.apply-btn{width:100%;padding:10px;border-radius:10px;background:rgba(123,111,255,.1);border:1px solid rgba(123,111,255,.3);color:var(--accent2);font-size:13px;font-weight:700;cursor:pointer;font-family:'Noto Sans JP',sans-serif;}
+.msg{font-size:11px;margin-bottom:8px;display:none;padding:8px;border-radius:6px;}
+.msg.err{color:var(--accent3);background:rgba(255,77,109,.08);}
+.msg.ok{color:var(--accent);background:rgba(0,255,224,.06);}
 
-.save-btn{width:100%;padding:14px;background:var(--accent);border:none;border-radius:12px;font-size:15px;font-weight:700;color:#000;cursor:pointer;font-family:'Noto Sans JP',sans-serif;margin-top:6px;}
-
-.ctx-menu{position:fixed;z-index:300;background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,.6);min-width:200px;animation:ctxIn .15s ease;}
-@keyframes ctxIn{from{opacity:0;transform:scale(.95);}to{opacity:1;transform:scale(1);}}
-.ctx-item{display:flex;align-items:center;gap:12px;padding:14px 18px;font-size:15px;cursor:pointer;border-bottom:1px solid var(--border);}
-.ctx-item:last-child{border-bottom:none;}
-.ctx-item:active{background:var(--surface2);}
-.ctx-item.danger{color:var(--accent3);}
-.ctx-backdrop{position:fixed;inset:0;z-index:299;}
-
-.toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:10px 20px;font-size:13px;color:var(--text);z-index:500;opacity:0;transition:all .3s;pointer-events:none;white-space:nowrap;}
+/* ── TOAST ── */
+.toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:10px 20px;font-size:13px;color:var(--text);z-index:500;opacity:0;transition:all .3s;pointer-events:none;white-space:nowrap;box-shadow:0 4px 20px rgba(0,0,0,.5);}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 
-::-webkit-scrollbar{width:4px;}
+::-webkit-scrollbar{width:3px;}
 ::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
 </style>
 </head>
 <body>
 
 <div class="topbar">
-  <div class="app-title">企業DB</div>
-  <div class="search-box">
+  <div class="app-title">// 企業DB</div>
+  <div class="search-wrap">
     <span class="search-icon">⌕</span>
-    <input type="search" id="search" placeholder="名前・キーワードで検索..." oninput="render()">
+    <input class="search-input" type="search" id="search" placeholder="企業名・キーワードで検索..." oninput="render()">
   </div>
   <button class="add-btn" onclick="openAdd()">+</button>
 </div>
 
-<div class="filter-bar" id="filter-bar"></div>
+<div class="tag-cloud" id="tag-cloud"></div>
 
-<div class="result-info">
-  <span id="result-count"></span>
-  <span class="clear-filter" id="clear-btn" onclick="clearFilters()" style="display:none">✕ リセット</span>
+<div class="status-bar">
+  <span id="status-text"></span>
+  <span class="clear-btn" id="clear-btn" onclick="clearAll()" style="display:none">✕ リセット</span>
 </div>
 
 <div class="card-list" id="card-list"></div>
 
-<!-- Add/Edit Sheet -->
+<!-- Add Sheet -->
 <div class="overlay" id="add-overlay" onclick="closeAdd(event)">
   <div class="sheet">
     <div class="sheet-handle" onclick="closeAddDirect()"></div>
-    <div class="add-sheet">
-      <h2 id="add-title">📥 情報を追加</h2>
-      <p>企業・メモ・気になった情報など何でも</p>
+    <div class="sheet-body">
+      <div class="sheet-title" id="sheet-title">+ 情報を追加</div>
+      <div class="sheet-sub">企業・メモ・セクター分析など何でも</div>
 
-      <div class="claude-import-box">
-        <div class="claude-import-title">🤖 Claude AIで画像から自動入力</div>
-        <div class="claude-steps">
-          <div class="claude-step"><span class="step-num">1</span>下のボタンでプロンプトをコピー</div>
-          <div class="claude-step"><span class="step-num">2</span>Claude.aiで画像と一緒に送信</div>
-          <div class="claude-step"><span class="step-num">3</span>返ってきたJSONを下に貼り付け→反映</div>
+      <div class="import-box">
+        <div class="import-title">🤖 Claude AIで画像から自動入力</div>
+        <div class="import-steps">
+          <div class="import-step"><span class="step-num">1</span>プロンプトをコピー</div>
+          <div class="import-step"><span class="step-num">2</span>Claude.aiで画像と一緒に送信</div>
+          <div class="import-step"><span class="step-num">3</span>返ってきたJSONを下に貼り付け→反映</div>
         </div>
-        <button class="copy-prompt-btn" onclick="copyPrompt()">📋 プロンプトをコピー</button>
-        <div class="divider"><span>または返答のJSONを貼り付け</span></div>
-        <textarea class="json-paste-area" id="json-paste" placeholder="ClaudeのJSONをここに貼り付け..."></textarea>
-        <div class="msg err" id="json-error"></div>
-        <div class="msg ok" id="json-success"></div>
-        <button class="apply-json-btn" onclick="applyJson()">✨ フォームに反映する</button>
+        <button class="copy-btn" onclick="copyPrompt()">📋 プロンプトをコピー</button>
+        <div class="divider"><span>JSONを貼り付け</span></div>
+        <textarea class="paste-area" id="json-paste" placeholder="ClaudeのJSONをここに貼り付け..."></textarea>
+        <div class="msg err" id="json-err"></div>
+        <div class="msg ok" id="json-ok"></div>
+        <button class="apply-btn" onclick="applyJson()">✨ フォームに反映</button>
       </div>
 
       <div class="field-label">名前・タイトル *</div>
       <input class="field-input" id="f-name" type="text" placeholder="例：株式会社〇〇 / AIセクターまとめ">
 
       <div class="field-label">カテゴリ</div>
-      <input class="field-input" id="f-category" type="text" placeholder="例：投資メモ・企業・ニュース">
+      <input class="field-input" id="f-category" type="text" placeholder="例：投資メモ・企業・セクター分析">
 
-      <div class="field-label">メモ・データ（自由に箇条書きでOK）</div>
-      <textarea class="field-textarea" id="f-memo" placeholder="・売上：〇〇億円&#10;・主力製品：〇〇&#10;・製造拠点：中国・タイ&#10;・気になる点：〇〇&#10;&#10;何でも自由に書いてください"></textarea>
+      <div class="field-label">メモ・データ（箇条書きOK）</div>
+      <textarea class="field-textarea" id="f-memo" placeholder="・売上：〇〇億円&#10;・注目理由：〇〇&#10;・リスク：〇〇&#10;&#10;自由に書いてください"></textarea>
 
       <div class="field-label">キーワード（スペース区切り）</div>
-      <input class="field-input" id="f-keywords" type="text" placeholder="例：AI 半導体 電力インフラ">
+      <input class="field-input" id="f-keywords" type="text" placeholder="例：AI 半導体 電力 インフラ">
 
       <div class="field-label">URL（あれば）</div>
       <input class="field-input" id="f-url" type="url" placeholder="https://">
@@ -171,12 +175,10 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans JP',sans-seri
   </div>
 </div>
 
-<div id="ctx-backdrop" class="ctx-backdrop" style="display:none" onclick="closeCtx()"></div>
-<div id="ctx-menu" class="ctx-menu" style="display:none"></div>
 <div class="toast" id="toast"></div>
 
 <script>
-const CLAUDE_PROMPT = `この画像に書かれている情報を読み取って、以下のJSON形式だけで返してください。わからない項目は""にしてください。説明文は不要です。
+const PROMPT = `この画像に書かれている情報を読み取って、以下のJSON形式だけで返してください。わからない項目は""にしてください。説明文は不要です。
 
 {
   "name": "タイトルまたは企業名",
@@ -186,158 +188,179 @@ const CLAUDE_PROMPT = `この画像に書かれている情報を読み取って
   "url": ""
 }`;
 
-const COLORS = ['#4fffb0','#7b6fff','#ff6b6b','#ffd166','#4fd1ff','#ff9f43','#ee5a24'];
+const PALETTE = ['#00ffe0','#7b6fff','#ff4d6d','#ffd166','#4dffb4','#4d9fff','#ff9f43','#ee5a24','#0abde3','#c8d6e5'];
 
 const SAMPLE = [
-  { id:1, name:"AIセクター投資メモ", category:"投資メモ", memo:"・電力・エネルギーインフラが最重要\n・データセンター向け電力需要が急増\n・電力会社（原子力・再生可能エネルギー）が有望\n・半導体：GPU・HBMメモリが鍵\n・NVIDIAだけでなくマイクロン・SKハイニックスも注目\n・短期では電力・インフラが最も確実", keywords:["AI","電力","半導体","インフラ"], url:"", color:"#4fffb0" },
-  { id:2, name:"株式会社テックビジョン", category:"IT・SaaS", memo:"・設立：2015年\n・従業員：250名\n・所在地：東京都渋谷区\n・売上：30億円\n・AIとクラウドを活用した業務効率化\n・製造業・物流向けDX推進\n・2023年シリーズBで15億円調達", keywords:["AI","クラウド","DX"], url:"", color:"#7b6fff" },
+  { id:1, name:"AI時代の投資セクターメモ", category:"投資・セクター分析", memo:"・電力・エネルギーインフラが最重要\n・データセンター向け電力需要が急増\n・電力会社（原子力・再生可能エネルギー）が有望\n・半導体：GPU・HBMメモリが鍵\n・NVIDIAだけでなくマイクロン・SKハイニックスも注目\n・フィジカルAI（ロボット）：2026年トレンド\n・ACSL、ヤマハ、ブルーイノベーション（ドローン）\n・ファナック（NVIDIAが株主）\n・短期では電力・インフラが最も確実", keywords:["AI","電力","半導体","インフラ","ロボット","ドローン","NVIDIA"], url:"", color:"#00ffe0" },
+  { id:2, name:"株式会社テックビジョン", category:"IT・SaaS", memo:"・設立：2015年\n・従業員：250名\n・所在地：東京都渋谷区\n・売上：30億円\n・AIとクラウドを活用した業務効率化\n・製造業・物流向けDX推進\n・2023年シリーズBで15億円調達", keywords:["AI","クラウド","DX","SaaS"], url:"", color:"#7b6fff" },
 ];
 
-let entries=[], activeKws=new Set(), editId=null;
+let entries=[], selectedKws=new Set(), editId=null, expandedId=null;
 
-function loadData(){ try{ const s=localStorage.getItem('corpdb_v4'); if(s) entries=JSON.parse(s); else{ entries=SAMPLE.map(x=>({...x})); saveData(); } }catch(e){ entries=SAMPLE.map(x=>({...x})); } }
-function saveData(){ try{ localStorage.setItem('corpdb_v4',JSON.stringify(entries)); }catch(e){} }
-function showToast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2500); }
+function load(){ try{ const s=localStorage.getItem('kdb_v5'); if(s) entries=JSON.parse(s); else{ entries=SAMPLE.map(x=>({...x})); save(); } }catch(e){ entries=SAMPLE.map(x=>({...x})); } }
+function save(){ try{ localStorage.setItem('kdb_v5',JSON.stringify(entries)); }catch(e){} }
+
+function toast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2500); }
 
 function copyPrompt(){
-  const fn = () => { const ta=document.createElement('textarea'); ta.value=CLAUDE_PROMPT; ta.style.cssText='position:fixed;opacity:0'; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); showToast('✓ コピーしました！Claude.aiに画像と一緒に貼り付けてください'); };
-  if(navigator.clipboard){ navigator.clipboard.writeText(CLAUDE_PROMPT).then(()=>showToast('✓ コピーしました！Claude.aiに画像と一緒に貼り付けてください')).catch(fn); } else fn();
+  const fn=()=>{ const ta=document.createElement('textarea'); ta.value=PROMPT; ta.style.cssText='position:fixed;opacity:0'; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); toast('✓ コピーしました！Claude.aiに画像と一緒に貼り付けてください'); };
+  if(navigator.clipboard) navigator.clipboard.writeText(PROMPT).then(()=>toast('✓ コピーしました！')).catch(fn); else fn();
 }
 
 function applyJson(){
   const raw=document.getElementById('json-paste').value.trim();
-  const errEl=document.getElementById('json-error'); const okEl=document.getElementById('json-success');
-  errEl.style.display='none'; okEl.style.display='none';
-  if(!raw){ errEl.textContent='⚠️ テキストを貼り付けてください'; errEl.style.display='block'; return; }
-  let jsonStr=raw;
-  const match=raw.match(/```(?:json)?\s*([\s\S]*?)```/); if(match) jsonStr=match[1].trim();
-  const bs=jsonStr.indexOf('{'),be=jsonStr.lastIndexOf('}');
-  if(bs!==-1&&be!==-1) jsonStr=jsonStr.slice(bs,be+1);
-  let data; try{ data=JSON.parse(jsonStr); }catch(e){ errEl.textContent='⚠️ 形式エラー。ClaudeのJSONをそのまま貼り付けてください'; errEl.style.display='block'; return; }
-  if(data.name) document.getElementById('f-name').value=data.name;
-  if(data.category) document.getElementById('f-category').value=data.category;
-  if(data.memo) document.getElementById('f-memo').value=data.memo;
-  if(data.url) document.getElementById('f-url').value=data.url;
-  if(data.keywords){ document.getElementById('f-keywords').value=Array.isArray(data.keywords)?data.keywords.join(' '):data.keywords; }
-  okEl.textContent='✓ 反映しました！内容確認して保存してください'; okEl.style.display='block';
+  const err=document.getElementById('json-err'), ok=document.getElementById('json-ok');
+  err.style.display='none'; ok.style.display='none';
+  if(!raw){ err.textContent='⚠️ テキストを貼り付けてください'; err.style.display='block'; return; }
+  let s=raw;
+  const m=raw.match(/```(?:json)?\s*([\s\S]*?)```/); if(m) s=m[1].trim();
+  const bs=s.indexOf('{'),be=s.lastIndexOf('}');
+  if(bs!==-1&&be!==-1) s=s.slice(bs,be+1);
+  let d; try{ d=JSON.parse(s); }catch(e){ err.textContent='⚠️ 形式エラー。ClaudeのJSONをそのまま貼り付けてください'; err.style.display='block'; return; }
+  if(d.name) document.getElementById('f-name').value=d.name;
+  if(d.category) document.getElementById('f-category').value=d.category;
+  if(d.memo) document.getElementById('f-memo').value=d.memo;
+  if(d.url) document.getElementById('f-url').value=d.url;
+  if(d.keywords) document.getElementById('f-keywords').value=Array.isArray(d.keywords)?d.keywords.join(' '):d.keywords;
+  ok.textContent='✓ 反映しました！内容確認して保存してください'; ok.style.display='block';
   document.getElementById('json-paste').value='';
   document.getElementById('f-name').scrollIntoView({behavior:'smooth',block:'center'});
 }
 
-function renderFilters(){
-  const bar=document.getElementById('filter-bar');
-  const allKws=[...new Set(entries.flatMap(e=>e.keywords||[]))].sort();
-  bar.innerHTML=allKws.map(kw=>{ const cnt=entries.filter(e=>(e.keywords||[]).includes(kw)).length; return `<div class="chip${activeKws.has(kw)?' active':''}" onclick="toggleKw('${kw}')">${kw} <span style="opacity:.5">${cnt}</span></div>`; }).join('');
+// ── Tag Cloud ──
+function renderTags(){
+  const cloud=document.getElementById('tag-cloud');
+  const all=[...new Set(entries.flatMap(e=>e.keywords||[]))].sort();
+  if(!all.length){ cloud.innerHTML='<span style="color:var(--muted);font-size:12px">キーワードがまだありません</span>'; return; }
+  cloud.innerHTML=all.map(kw=>{
+    const cnt=entries.filter(e=>(e.keywords||[]).includes(kw)).length;
+    const sel=selectedKws.has(kw);
+    return `<div class="kw-tag${sel?' selected':''}" onclick="toggleKw('${kw}')">${kw} <span class="kw-count">${cnt}</span></div>`;
+  }).join('');
 }
-function toggleKw(kw){ if(activeKws.has(kw)) activeKws.delete(kw); else activeKws.add(kw); render(); }
-function clearFilters(){ activeKws.clear(); document.getElementById('search').value=''; render(); }
 
+function toggleKw(kw){ if(selectedKws.has(kw)) selectedKws.delete(kw); else selectedKws.add(kw); render(); }
+function clearAll(){ selectedKws.clear(); document.getElementById('search').value=''; render(); }
+
+// ── Filter ──
 function getFiltered(){
-  const q=document.getElementById('search').value.toLowerCase();
+  const q=document.getElementById('search').value.toLowerCase().trim();
   return entries.filter(e=>{
-    const mQ=!q||e.name.toLowerCase().includes(q)||(e.memo||'').toLowerCase().includes(q)||(e.keywords||[]).some(k=>k.toLowerCase().includes(q));
-    const mK=activeKws.size===0||[...activeKws].every(kw=>(e.keywords||[]).includes(kw));
+    const mQ=!q||e.name.toLowerCase().includes(q)||(e.memo||'').toLowerCase().includes(q)||(e.keywords||[]).some(k=>k.toLowerCase().includes(q))||(e.category||'').toLowerCase().includes(q);
+    const mK=selectedKws.size===0||[...selectedKws].every(kw=>(e.keywords||[]).includes(kw));
     return mQ&&mK;
   });
 }
 
+// ── Render ──
 function render(){
-  renderFilters();
+  renderTags();
   const filtered=getFiltered();
-  const hasFilter=activeKws.size>0||document.getElementById('search').value;
+  const hasFilter=selectedKws.size>0||document.getElementById('search').value;
   document.getElementById('clear-btn').style.display=hasFilter?'':'none';
-  document.getElementById('result-count').textContent=`${filtered.length} 件 / 全 ${entries.length} 件`;
+  document.getElementById('status-text').textContent=`${filtered.length} / ${entries.length} 件`;
   const list=document.getElementById('card-list');
-  if(!filtered.length){ list.innerHTML='<div class="empty"><div class="icon">🔍</div>見つかりませんでした</div>'; return; }
-  list.innerHTML=filtered.map(cardHTML).join('');
+  if(!filtered.length){
+    list.innerHTML=`<div class="empty"><div class="empty-icon">🔍</div><div class="empty-text">条件に一致する情報が見つかりませんでした<br><span style="font-size:12px">キーワードを変えてみてください</span></div></div>`;
+    return;
+  }
+  list.innerHTML=filtered.map(e=>cardHTML(e)).join('');
 }
 
 function cardHTML(e){
-  const color=e.color||'#4fffb0';
-  const initial=e.name?e.name[0]:'?';
-  const tags=(e.keywords||[]).map(kw=>`<span class="tag" onclick="event.stopPropagation();toggleKw('${kw}')">${kw}</span>`).join('');
-  return `<div class="card">
-    <div class="card-top" onclick="openEdit(${e.id})">
-      <div class="avatar" style="background:${color}22;color:${color}">${initial}</div>
-      <div class="card-info">
-        <div class="card-name">${e.name}</div>
-        ${e.category?`<div class="card-category">${e.category}</div>`:''}
-        ${e.memo?`<div class="card-memo">${e.memo}</div>`:''}
-        ${tags?`<div class="card-tags">${tags}</div>`:''}
-      </div>
+  const color=e.color||'#00ffe0';
+  const isExp=expandedId===e.id;
+  const tags=(e.keywords||[]).map(kw=>{
+    const sel=selectedKws.has(kw);
+    return `<span class="card-tag${sel?' selected':''}" onclick="event.stopPropagation();toggleKw('${kw}')" style="${sel?'border-color:var(--accent);background:rgba(0,255,224,.12)':''}">${kw}</span>`;
+  }).join('');
+  return `<div class="card${isExp?' expanded':''}" id="card-${e.id}" style="--card-color:${color}">
+    <div class="card-header" onclick="toggleCard(${e.id})">
+      <div class="card-dot"></div>
+      <div class="card-title">${e.name}</div>
+      ${e.category?`<div class="card-category">${e.category}</div>`:''}
     </div>
-    <div class="card-actions">
-      <button class="card-action-btn btn-claude" onclick="openClaude(${e.id})">🤖 Claudeと話す</button>
-      <button class="card-action-btn btn-edit" onclick="openEdit(${e.id})">✏️ 編集</button>
-      <button class="card-action-btn btn-delete" onclick="deleteEntry(${e.id})">🗑</button>
+    ${tags?`<div class="card-tags">${tags}</div>`:''}
+    <div class="card-body">
+      ${e.memo?`<div class="card-memo">${e.memo}</div>`:''}
+      <div class="card-actions">
+        <button class="action-btn btn-claude" onclick="openClaude(${e.id})">🤖 Claudeと話す</button>
+        <button class="action-btn btn-edit" onclick="openEdit(${e.id})">✏️ 編集</button>
+        <button class="action-btn btn-delete" onclick="delEntry(${e.id})">🗑 削除</button>
+      </div>
     </div>
   </div>`;
 }
 
+function toggleCard(id){
+  expandedId=expandedId===id?null:id;
+  render();
+  if(expandedId){ setTimeout(()=>{ const el=document.getElementById('card-'+id); if(el) el.scrollIntoView({behavior:'smooth',block:'nearest'}); },100); }
+}
+
 function openClaude(id){
   const e=entries.find(x=>x.id===id); if(!e) return;
-  const prompt = `以下は私が集めた情報です。この情報をベースに一緒に考えてください。
+  const p=`以下は私が集めた情報です。この情報をベースに一緒に考えてください。
 
-【${e.name}】
-カテゴリ：${e.category||''}
+【${e.name}】${e.category?'\nカテゴリ：'+e.category:''}
 キーワード：${(e.keywords||[]).join('、')}
 
 ${e.memo||''}
-
-${e.url?'URL：'+e.url:''}
+${e.url?'\nURL：'+e.url:''}
 
 ---
-まずこの情報について、気になる点・深掘りすべきポイントを教えてください。その後、私の質問に答えてください。`;
-  const url='https://claude.ai/new?q='+encodeURIComponent(prompt);
-  window.open(url,'_blank');
+まずこの情報について気になる点・深掘りすべきポイントを教えてください。その後、私の質問に答えてください。`;
+  window.open('https://claude.ai/new?q='+encodeURIComponent(p),'_blank');
 }
 
+// ── Add / Edit ──
 function openAdd(){
   editId=null;
-  document.getElementById('add-title').textContent='📥 情報を追加';
+  document.getElementById('sheet-title').textContent='+ 情報を追加';
   ['f-name','f-category','f-memo','f-keywords','f-url'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
   document.getElementById('json-paste').value='';
-  document.getElementById('json-error').style.display='none';
-  document.getElementById('json-success').style.display='none';
+  document.getElementById('json-err').style.display='none';
+  document.getElementById('json-ok').style.display='none';
   document.getElementById('add-overlay').classList.add('open');
 }
 function openEdit(id){
   const e=entries.find(x=>x.id===id); if(!e) return;
   editId=id;
-  document.getElementById('add-title').textContent='✏️ 編集';
+  document.getElementById('sheet-title').textContent='✏️ 編集';
   document.getElementById('f-name').value=e.name||'';
   document.getElementById('f-category').value=e.category||'';
   document.getElementById('f-memo').value=e.memo||'';
   document.getElementById('f-keywords').value=(e.keywords||[]).join(' ');
   document.getElementById('f-url').value=e.url||'';
   document.getElementById('json-paste').value='';
-  document.getElementById('json-error').style.display='none';
-  document.getElementById('json-success').style.display='none';
+  document.getElementById('json-err').style.display='none';
+  document.getElementById('json-ok').style.display='none';
   document.getElementById('add-overlay').classList.add('open');
 }
 function closeAdd(e){ if(e.target===document.getElementById('add-overlay')) closeAddDirect(); }
 function closeAddDirect(){ document.getElementById('add-overlay').classList.remove('open'); }
 
 function saveEntry(){
-  const name=document.getElementById('f-name').value.trim(); if(!name){ alert('名前・タイトルは必須です'); return; }
+  const name=document.getElementById('f-name').value.trim();
+  if(!name){ alert('名前・タイトルは必須です'); return; }
   const keywords=document.getElementById('f-keywords').value.split(/[\s、,，]+/).map(k=>k.trim()).filter(Boolean);
-  const color=editId?(entries.find(x=>x.id===editId)||{}).color||COLORS[entries.length%COLORS.length]:COLORS[entries.length%COLORS.length];
+  const color=editId?(entries.find(x=>x.id===editId)||{}).color||PALETTE[entries.length%PALETTE.length]:PALETTE[entries.length%PALETTE.length];
   const entry={ id:editId||Date.now(), name, category:document.getElementById('f-category').value.trim(), memo:document.getElementById('f-memo').value.trim(), keywords, url:document.getElementById('f-url').value.trim(), color };
-  if(editId){ const idx=entries.findIndex(x=>x.id===editId); if(idx!==-1) entries[idx]=entry; }
+  if(editId){ const i=entries.findIndex(x=>x.id===editId); if(i!==-1) entries[i]=entry; }
   else entries.unshift(entry);
-  saveData(); closeAddDirect(); showToast('✓ 保存しました'); render();
+  save(); closeAddDirect(); toast('✓ 保存しました'); expandedId=null; render();
 }
-function deleteEntry(id){ if(!confirm('削除しますか？')) return; entries=entries.filter(x=>x.id!==id); saveData(); showToast('削除しました'); render(); }
 
-let longPressTimer=null;
-function startLongPress(event,id){ longPressTimer=setTimeout(()=>{ const t=event.touches[0]; openCtx({clientX:t.clientX,clientY:t.clientY,preventDefault:()=>{}},id); },500); }
-function cancelLongPress(){ if(longPressTimer){ clearTimeout(longPressTimer); longPressTimer=null; } }
-function openCtx(event,id){ event.preventDefault(); }
-function closeCtx(){ document.getElementById('ctx-menu').style.display='none'; document.getElementById('ctx-backdrop').style.display='none'; }
+function delEntry(id){
+  if(!confirm('削除しますか？')) return;
+  entries=entries.filter(x=>x.id!==id);
+  if(expandedId===id) expandedId=null;
+  save(); toast('削除しました'); render();
+}
 
-if('serviceWorker' in navigator){ window.addEventListener('load',()=>{ navigator.serviceWorker.register('sw.js').catch(()=>{}); }); }
+if('serviceWorker' in navigator){ window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{})); }
 
-loadData(); render();
+load(); render();
 </script>
 </body>
 </html>
